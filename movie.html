@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Ticket Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Tagesschrift&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      flex-direction: column;
+    }
+
+    .container {
+      background: white;
+      padding: 50px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 1200px;
+      width: 100%;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 20px;
+      animation: slideIn 1s ease-in-out;
+      font-family: "Tagesschrift", Static;
+      font-weight: 900;
+      font-style: normal;
+    }
+
+    @keyframes slideIn {
+      0% {
+        opacity: 0;
+        transform: translateX(-100px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .movies {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 20px;
+      margin-top: 30px;
+    }
+
+    .movie-poster {
+      width: 100%;
+      height: 250px;
+      border-radius: 15px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .movie-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background-color: rgb(0, 0, 0) solid;
+      opacity: 0.4;
+    }
+
+    .movie-poster img:hover{
+      opacity: 1;
+    }
+
+    .movie-poster:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .movie-name {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 16px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .movie-booking {
+      display: none;
+      text-align: left;
+      margin-top: 30px;
+    }
+
+    .movie-booking input, .movie-booking select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .movie-booking button {
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: all 0.4s ease;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      cursor: pointer;
+    }
+
+    .movie-booking button:hover {
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      transform: scale(1.1);
+      box-shadow: 0 8px 20px rgba(67, 206, 162, 0.5);
+    }
+
+    .back-button {
+      padding: 10px 20px;
+      background: #f44336;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .back-button:hover {
+      background: #d32f2f;
+      transform: scale(1.05);
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .movies {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+      }
+    }
+        /* Preloader Styles */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e0f7ff, #d0eaff, #f0f9ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #cce7ff;
+  border-top: 6px solid #007bff; /* Blue spinner color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+  </style>
+</head>
+<body>
+    <!-- Preloader -->
+<div id="preloader">
+  <div class="spinner"></div>
+</div>
+
+
+  <!-- Movie Poster Section -->
+  <div class="container">
+    <h1>Book Your Movie Tickets🎟️</h1>
+    <div class="movies">
+      <div>
+        <div class="movie-poster" onclick="showBooking('Avengers: Endgame')">
+          <img src="avengers.jpg" alt="Avengers: Endgame">
+        </div>
+        <div class="movie-name">AVENGERS: Endgame</div>
+      </div>
+      <div>
+        <div class="movie-poster" onclick="showBooking('Spider-Man: No Way Home')">
+          <img src="spiderman.jpg" alt="Spider-Man: No Way Home">
+        </div>
+        <div class="movie-name">Spider-Man: No Way Home</div>
+      </div>
+      <div>
+        <div class="movie-poster" onclick="showBooking('The Batman')">
+          <img src="batman.jpg" alt="The Batman">
+        </div>
+        <div class="movie-name">The Batman</div>
+      </div>
+      <div>
+        <div class="movie-poster" onclick="showBooking('Black Panther')">
+          <img src="blackpanther.jpeg" alt="Black Panther">
+        </div>
+        <div class="movie-name">Black Panther</div>
+      </div>
+
+      <div>
+        <div class="movie-poster" onclick="showBooking('Doctor Strange')">
+          <img src="doctorstrange.jpg" alt="Doctor Strange">
+        </div>
+        <div class="movie-name">Doctor Strange</div>
+      </div>
+      <div>
+        <div class="movie-poster" onclick="showBooking('Guardians of the Galaxy')">
+          <img src="guardians.jpg" alt="Guardians of the Galaxy">
+        </div>
+        <div class="movie-name">Guardians of the Galaxy</div>
+      </div>
+      <div>
+        <div class="movie-poster" onclick="showBooking('Iron Man')">
+          <img src="ironman.jpg" alt="Iron Man">
+        </div>
+        <div class="movie-name">Iron Man</div>
+      </div>
+      <div>
+        <div class="movie-poster" onclick="showBooking('Thor: Ragnarok')">
+          <img src="thor.jpg" alt="Thor: Ragnarok">
+        </div>
+        <div class="movie-name">Thor: Ragnarok</div>
+      </div>
+
+      <div>
+        <div class="movie-poster" onclick="showBooking('Captain America: Civil War')">
+            <img src="civilwar.jpg" alt="Captain America: Civil War">
+          </div>
+          <div class="movie-name">Captain America: Civil war</div>
+      </div>
+      <div>
+          <div class="movie-poster" onclick="showBooking('Harry Potter')">
+            <img src="harrypotter.jpg" alt="Harry Potter">
+          </div>
+          <div class="movie-name">Harry Potter: Prisoner of the Azkaban</div>
+      </div>
+      <div>
+          <div class="movie-poster" onclick="showBooking('Hulk')">
+            <img src="hulk.jpg" alt="Hulk">
+          </div>
+          <div class="movie-name">The Incredible Hulk</div>
+      </div>
+      <div>
+          <div class="movie-poster" onclick="showBooking('Ant-Man')">
+            <img src="antman.jpg" alt="Ant-Man">
+          </div>
+          <div class="movie-name">Ant-Man and the Wasp: Quantumania</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Movie Booking Form -->
+  <div class="movie-booking" id="movieBookingForm">
+    <h2>Book Tickets for <span id="movieTitle"></span></h2>
+    <form id="movieForm">
+      <div>
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+      
+      <div>
+        <label for="showtime">Select Showtime:</label>
+        <select id="showtime" name="showtime" required>
+          <option value="">Select Showtime</option>
+          <option value="1">12:00 PM</option>
+          <option value="2">3:00 PM</option>
+          <option value="3">6:00 PM</option>
+          <option value="4">9:00 PM</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="tickets">Number of Tickets:</label>
+        <input type="number" id="tickets" name="tickets" min="1" max="10" required>
+      </div>
+
+      <!-- Button to navigate to MOVIE2.html -->
+      <button type="button" onclick="window.location.href='movie2.html';">Book Now</button>
+      <p class="error" id="errorMessage"></p>
+    </form>
+    
+    <!-- Back Button to Movie Selection -->
+    <button type="button" class="back-button" onclick="goBack()">Back to Movies</button>
+  </div>
+
+  <footer style="margin-top: 50px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 30px 20px; border-radius: 20px 20px 0 0; width: 100%; box-shadow: 0 -5px 20px rgba(0,0,0,0.1);">
+    <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+      <h2 style="margin-bottom: 10px; font-size: 28px;">🎬 Movie World</h2>
+      <p style="font-size: 16px; margin-bottom: 20px;">Your favorite movies at the click of a button!</p>
+    </div>
+  </footer>
+
+  <script>
+    function showBooking(movieTitle) {
+      document.querySelector('.movies').style.display = 'none'; // Hide movie posters
+      document.querySelector('.movie-booking').style.display = 'block'; // Show booking form
+      document.getElementById('movieTitle').textContent = movieTitle;
+    
+      // 🔥 Save selected movie into localStorage
+      localStorage.setItem('selectedMovie', movieTitle);
+    }
+    
+    function goBack() {
+      document.querySelector('.movies').style.display = 'grid'; // Show movie posters
+      document.querySelector('.movie-booking').style.display = 'none'; // Hide booking form
+    }
+    
+    // Booking form submit button (navigating to movie2.html)
+    function bookNow() {
+      window.location.href = 'movie2.html';
+    }
+    </script>
+      <script>
+        // Preloader removal
+        window.addEventListener('load', () => {
+          const preloader = document.getElementById('preloader');
+          preloader.style.opacity = '0';
+          preloader.style.transition = 'opacity 0.5s ease';
+          setTimeout(() => {
+            preloader.style.display = 'none';
+          }, 500); // Wait for the fade-out transition
+        });
+      </script>
+    
+</body>
+</html>

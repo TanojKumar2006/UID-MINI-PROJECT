@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flight Booked Successfully</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: #fff;
+      padding: 20px;
+      animation: fadeIn 2s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .success-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 50px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      max-width: 500px;
+      width: 90%;
+      animation: pop 1.5s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); }
+      100% { transform: scale(1); }
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      margin-top: 30px;
+      padding: 15px 30px;
+      font-size: 18px;
+      background: #00c6ff;
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+      border: none;
+      color: white;
+      border-radius: 50px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 114, 255, 0.4);
+    }
+
+    .btn:hover {
+      transform: scale(1.1);
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+    }
+
+    .ticket {
+      background: rgba(255,255,255,0.2);
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 15px;
+      font-size: 16px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .ticket p {
+      margin: 8px 0;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="success-box">
+    <h1>🎉 Booking Confirmed!</h1>
+    <p>Your flight has been successfully booked.</p>
+
+    <div class="ticket" id="ticketDetails">
+      <!-- Ticket details will be filled by JS -->
+    </div>
+
+    <a href="FLIGHT.html" class="btn">Book Another Flight</a>
+  </div>
+
+<script>
+  // Dummy data for success page (normally this would come from backend or session storage)
+  const bookingDetails = {
+    name: "Tanoj", // You can change to dynamically fetch from previous page!
+    from: "Chennai",
+    to: "Mumbai",
+    date: "2025-05-10",
+    time: "10:00 AM",
+    passengers: 1,
+    totalFare: "₹ 5600"
+  };
+
+  function loadTicketDetails() {
+    const ticketDiv = document.getElementById('ticketDetails');
+    ticketDiv.innerHTML = `
+      <p><strong>Passenger Name:</strong> ${bookingDetails.name}</p>
+      <p><strong>Departure:</strong> ${bookingDetails.from}</p>
+      <p><strong>Destination:</strong> ${bookingDetails.to}</p>
+      <p><strong>Date of Journey:</strong> ${bookingDetails.date}</p>
+      <p><strong>Time:</strong> ${bookingDetails.time}</p>
+      <p><strong>Passengers:</strong> ${bookingDetails.passengers}</p>
+      <p><strong>Total Fare:</strong> ${bookingDetails.totalFare}</p>
+    `;
+  }
+
+  // When page loads
+  window.onload = loadTicketDetails;
+</script>
+
+</body>
+</html>

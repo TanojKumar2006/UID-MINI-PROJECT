@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Transaction Cancelled</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #ff5f6d, #ffc371);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      padding: 50px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      animation: slideDown 1s ease;
+      max-width: 500px;
+      width: 100%;
+    }
+    
+    @keyframes slideDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    h1 {
+      color: #e53935;
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+    
+    p {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 30px;
+    }
+    
+    .back-btn {
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: all 0.4s ease;
+      box-shadow: 0 8px 20px rgba(255, 65, 108, 0.5);
+    }
+    
+    .back-btn:hover {
+      background: linear-gradient(135deg, #ff4b2b, #ff416c);
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(255, 75, 43, 0.6);
+    }
+
+    img {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+        /* Preloader Styles */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e0f7ff, #d0eaff, #f0f9ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #cce7ff;
+  border-top: 6px solid #007bff; /* Blue spinner color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+  </style>
+</head>
+
+<body>
+    <!-- Preloader -->
+<div id="preloader">
+  <div class="spinner"></div>
+</div>
+
+
+  <div class="container">
+    <img src="https://cdn-icons-png.flaticon.com/512/753/753345.png" alt="Cancelled">
+    <h1>Transaction Cancelled</h1>
+    <p>Oops! Your payment was not completed. <br> Please try again or choose another method.</p>
+    <a href="HOME.html" class="back-btn">Back to Home</a>
+  </div>
+  <script>
+    // Preloader removal
+    window.addEventListener('load', () => {
+      const preloader = document.getElementById('preloader');
+      preloader.style.opacity = '0';
+      preloader.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => {
+        preloader.style.display = 'none';
+      }, 500); // Wait for the fade-out transition
+    });
+  </script>
+</body>
+</html>

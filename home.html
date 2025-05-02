@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Online Ticket Booking - Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      background: white;
+      padding: 50px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+      margin: 40px auto;
+      animation: fadeIn 1.5s ease-in-out;
+      flex: 1;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 50px;
+      color: #333;
+      margin-bottom: 20px;
+      animation: slideIn 1s ease-in-out;
+      font-family: 'Tangerine', serif;
+    }
+
+    @keyframes slideIn {
+      0% { opacity: 0; transform: translateX(-100px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    p {
+      font-size: 20px;
+      color: #666;
+      margin-bottom: 30px;
+      font-family: cursive;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: all 0.4s ease;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      transform: scale(1.1);
+      box-shadow: 0 8px 20px rgba(67, 206, 162, 0.5);
+    }
+
+    .cards {
+      margin-top: 40px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .card {
+      background: #111;
+      width: 140px;
+      height: 140px;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.4s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(135deg, #13c5a4, #768ae0);
+      transform: rotate(45deg);
+      opacity: 0;
+      transition: all 0.5s ease;
+      z-index: 1;
+    }
+
+    .card:hover::before {
+      top: 0;
+      left: 0;
+      opacity: 0.8;
+    }
+
+    .card img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 1;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      z-index: 0;
+    }
+
+    .card span {
+      color: white;
+      font-size: 25px;
+      font-weight: bold;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      font-family: "Cinzel", serif;
+      font-optical-sizing: auto;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .card:hover img {
+      opacity: 0.2;
+      transform: scale(1.05);
+    }
+
+    .card:hover span {
+      opacity: 1;
+    }
+
+    @media (max-width: 600px) {
+      .cards {
+        flex-direction: column;
+      }
+      .card {
+        width: 100%;
+        height: 120px;
+      }
+    }
+
+    footer {
+      background-color: #0f0f0f;
+      color: #ccc;
+      padding: 40px 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .footer-section {
+      flex: 1;
+      min-width: 250px;
+      margin-bottom: 20px;
+    }
+
+    .footer-section h2, .footer-section h3 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .footer-section p, .footer-section li {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-section a {
+      color: #ccc;
+      text-decoration: none;
+    }
+
+    .footer-section a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    footer hr {
+      margin: 30px 0;
+      border-color: #444;
+    }
+
+    footer p {
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+    }
+        /* Preloader Styles */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e0f7ff, #d0eaff, #f0f9ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #cce7ff;
+  border-top: 6px solid #007bff; /* Blue spinner color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+  </style>
+</head>
+<body>
+    <!-- Preloader -->
+<div id="preloader">
+  <div class="spinner"></div>
+</div>
+
+
+  <div class="container">
+    <h1>Welcome to TicketGo 🎟️</h1>
+    <p>Book your tickets for Movies, Events, Flights, Buses, Ships and more!</p>
+
+    <!-- Cards Section -->
+    <div class="cards">
+      <a href="movie.html" class="card">
+        <img src="harrypotter.jpg" alt="Movies">
+        <span>Movie</span>
+      </a>
+      <a href="event.html" class="card">
+        <img src="events.jpg" alt="Events">
+        <span>Event</span>
+      </a>
+      <a href="flight.html" class="card">
+        <img src="flight.jpg" alt="Flights">
+        <span>Flight</span>
+      </a>
+    </div>
+
+    <div class="cards">
+      <a href="train.html" class="card">
+        <img src="trian.jpg" alt="Trains">
+        <span>Train</span>
+      </a>
+      <a href="BUS.html" class="card">
+        <img src="bus.jpg" alt="Buses">
+        <span>Bus</span>
+      </a>
+      <a href="SHIP.html" class="card">
+        <img src="ship.jpg" alt="Ships">
+        <span>Ship</span>
+      </a>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-section">
+        <h2>🎟️ TicketGo</h2>
+        <p>Your one-stop destination to book tickets for movies, events, travel and much more. Fast, easy and secure!</p>
+      </div>
+  
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+  
+      <div class="footer-section">
+        <h3>Get in Touch</h3>
+        <p>📍 Mumbai, India<br>📞 +91 98765 43210<br>✉️ support@ticketgo.com</p>
+      </div>
+    </div>
+  
+    <hr>
+    <p>&copy; 2025 TicketGo. All Rights Reserved.</p>
+  </footer>
+  <script>
+    // Preloader removal
+    window.addEventListener('load', () => {
+      const preloader = document.getElementById('preloader');
+      preloader.style.opacity = '0';
+      preloader.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => {
+        preloader.style.display = 'none';
+      }, 500); // Wait for the fade-out transition
+    });
+  </script>
+
+</body>
+</html>

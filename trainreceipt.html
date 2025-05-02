@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Transaction Receipt</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+  
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background-attachment: fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      overflow: hidden;
+    }
+  
+    .receipt-container {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 700px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.8s ease-in-out;
+      color: #fff;
+    }
+  
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  
+    h2 {
+      text-align: center;
+      color: #ffffff;
+      font-weight: 400;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #00ffe7;
+      padding-bottom: 10px;
+      text-shadow: 0 2px 10px #00ffe7;
+      border-radius: 10%;
+      font-family: 'Tangerine', serif;
+      border-radius: 10%;
+      font-size: 50px;
+    }
+  
+    .details {
+      font-size: 18px;
+      color: #e0e0e0;
+      margin-bottom: 25px;
+    }
+  
+    .details div {
+      margin: 10px 0;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+  
+    .details div:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: scale(1.02);
+      box-shadow: 0 0 15px rgba(0, 255, 231, 0.3);
+    }
+  
+    .details label {
+      font-weight: 600;
+      color: #00ffe7;
+      display: inline-block;
+      width: 150px;
+    }
+  
+    .details span {
+      color: #ffffff;
+    }
+  
+    .price {
+      font-size: 22px;
+      font-weight: bold;
+      text-align: right;
+      color: #00ffe7;
+      margin-top: 20px;
+      text-shadow: 0 0 10px #00ffe7;
+    }
+  
+    .back-btn {
+      display: inline-block;
+      text-align: center;
+      margin-top: 30px;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #00ffe7, #007bff);
+      color: #111;
+      border-radius: 50px;
+      text-decoration: none;
+      box-shadow: 0 10px 20px rgba(0, 255, 231, 0.3);
+      transition: 0.4s;
+    }
+  
+    .back-btn:hover {
+      background: linear-gradient(135deg, #007bff, #00ffe7);
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00ffe7, 0 0 40px #007bff;
+    }
+  
+    /* Preloader Styles */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+  
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid rgba(0, 255, 231, 0.2);
+      border-top: 6px solid #00ffe7;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      box-shadow: 0 0 20px #00ffe7;
+    }
+  
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  
+</head>
+<body>
+  <!-- Preloader -->
+  <div id="preloader">
+    <div class="spinner"></div>
+  </div>
+  
+  <div class="receipt-container">
+    <h2>Transaction Receipt</h2>
+    <div class="details">
+      <div><label>From Station:</label> <span id="fromStation"></span></div>
+      <div><label>To Station:</label> <span id="toStation"></span></div>
+      <div><label>Travel Date:</label> <span id="travelDate"></span></div>
+      <div><label>Class:</label> <span id="classType"></span></div>
+      <div><label>Passengers:</label> <span id="passengersCount"></span></div>
+      <div><label>Passenger Names:</label> <span id="passengerNames"></span></div>
+    </div>
+    <div class="price" id="totalPrice"></div>
+    <a href="train.html" class="back-btn">Go Back to Booking</a>
+    <a href="finaltransaction.html" class="back-btn">Confirm Purchase</a>
+    <a href="transactioncancelled.html" class="back-btn">Cancel Booking</a>
+  </div>
+
+  <script>
+    // Retrieve stored booking data from localStorage
+    const bookingData = JSON.parse(localStorage.getItem('trainBookingData'));
+
+    if (bookingData) {
+      // Populate receipt with booking data
+      document.getElementById('fromStation').textContent = bookingData.fromStation;
+      document.getElementById('toStation').textContent = bookingData.toStation;
+      document.getElementById('travelDate').textContent = bookingData.travelDate;
+      document.getElementById('classType').textContent = bookingData.classType;
+      document.getElementById('passengersCount').textContent = bookingData.passengers;
+      document.getElementById('passengerNames').textContent = bookingData.passengerNames.join(', ');
+      document.getElementById('totalPrice').textContent = `Total Price: ₹${bookingData.totalPrice}`;
+    } else {
+      // If no booking data is found
+      document.querySelector('.receipt-container').innerHTML = '<p>No booking data found.</p>';
+    }
+  </script>
+    <script>
+      // Preloader removal
+      window.addEventListener('load', () => {
+        const preloader = document.getElementById('preloader');
+        preloader.style.opacity = '0';
+        preloader.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => {
+          preloader.style.display = 'none';
+        }, 500); // Wait for the fade-out transition
+      });
+    </script>
+
+</body>
+</html>

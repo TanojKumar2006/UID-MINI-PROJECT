@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction Confirmation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
+  <style>
+    /* General Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .transaction-container {
+      background-color: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      color: #333;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+      font-family: 'Tangerine', serif;
+      border-bottom: #15a6e4 solid 3px;
+      border-radius: 10%;
+      font-size: 50px;
+    }
+
+    .transaction-details {
+      margin-top: 20px;
+      text-align: left;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .detail {
+      margin-bottom: 15px;
+    }
+
+    .detail label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .detail span {
+      color: #555;
+    }
+
+    button {
+      padding: 14px 30px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: all 0.4s ease;
+      cursor: pointer;
+      border: none;
+      margin-top: 30px;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      transform: scale(1.05);
+    }
+
+    button:nth-child(2) {
+      background-color: #f44336;
+      margin-left: 10px;
+    }
+
+    button:nth-child(2):hover {
+      background-color: #d32f2f;
+    }
+        /* Preloader Styles */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e0f7ff, #d0eaff, #f0f9ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #cce7ff;
+  border-top: 6px solid #007bff; /* Blue spinner color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+  </style>
+</head>
+<body>
+    <!-- Preloader -->
+<div id="preloader">
+  <div class="spinner"></div>
+</div>
+
+
+  <div class="transaction-container">
+    <h1>Transaction Summary</h1>
+    
+    <div class="transaction-details">
+      <div class="detail">
+        <label>Movie:</label>
+        <span id="movieTitleDisplay"></span>
+      </div>
+      <div class="detail">
+        <label>Date:</label>
+        <span id="movieDate"></span>
+      </div>
+      <div class="detail">
+        <label>Showtime:</label>
+        <span id="movieShowtime"></span>
+      </div>
+      <div class="detail">
+        <label>Theater:</label>
+        <span id="theaterDisplay"></span>
+      </div>
+      <div class="detail">
+        <label>Number of Tickets:</label>
+        <span id="ticketCount"></span>
+      </div>
+      <div class="detail">
+        <label>Total Amount:</label>
+        <span id="totalAmount"></span>
+      </div>
+    </div>
+
+    <div class="confirmation">
+      <button onclick="confirmTransaction()">Confirm Purchase</button>
+      <button onclick="cancelTransaction()">Cancel</button>
+    </div>
+
+  </div>
+
+  <script>
+    window.onload = function() {
+      // Retrieve values from localStorage
+      const city = localStorage.getItem('city') || "Not Selected";
+      const theater = localStorage.getItem('theater') || "Not Selected";
+      const movie = localStorage.getItem('movie') || "Unknown Movie";
+      const showtime = localStorage.getItem('showtime') || "Not Selected";
+      const tickets = parseInt(localStorage.getItem('tickets')) || 0;
+    
+      // Display the values
+      document.getElementById('movieTitleDisplay').textContent = movie;
+      document.getElementById('movieDate').textContent = city;
+      document.getElementById('movieShowtime').textContent = showtime;
+      document.getElementById('theaterDisplay').textContent = theater;
+      document.getElementById('ticketCount').textContent = tickets;
+    
+      const pricePerTicket = 700; // Assume ₹700 per ticket
+      const totalAmount = tickets * pricePerTicket;
+      document.getElementById('totalAmount').textContent = "₹" + totalAmount;
+    }
+    
+    function confirmTransaction() {
+      alert("✅ Your purchase has been confirmed! Enjoy your movie!");
+      // After confirmation, you could redirect or reset localStorage if you want.
+      window.location.href = 'finaltransaction.html'; // Redirect to the movie selection page
+    }
+    
+    function cancelTransaction() {
+      window.location.href = 'transactioncancelled.html'; // Redirect to the movie selection page
+    }
+    </script>
+      <script>
+        // Preloader removal
+        window.addEventListener('load', () => {
+          const preloader = document.getElementById('preloader');
+          preloader.style.opacity = '0';
+          preloader.style.transition = 'opacity 0.5s ease';
+          setTimeout(() => {
+            preloader.style.display = 'none';
+          }, 500); // Wait for the fade-out transition
+        });
+      </script>
+    
+
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Ticket Booking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    /* General Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    /* Form Elements */
+    .form-group {
+      position: relative;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+
+    label {
+      font-size: 16px;
+      margin-bottom: 8px;
+      display: block;
+      color: #555;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      background: #f9f9f9;
+    }
+
+    input[type="text"]:focus, select:focus {
+      border-color: #667eea;
+      background: #fff;
+      outline: none;
+    }
+
+    .suggestions {
+      position: absolute;
+      width: 100%;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      display: none;
+      z-index: 10;
+    }
+
+    .suggestions div {
+      padding: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .suggestions div:hover {
+      background-color: #eee;
+    }
+
+    .theater-select, .ticket-select {
+      margin-top: 20px;
+    }
+
+    .theater-select select, .ticket-select input {
+      width: 100%;
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      font-size: 16px;
+    }
+
+    .proceed-btn {
+      background-color: #667eea;
+      color: white;
+      font-size: 18px;
+      padding: 15px 30px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.4s ease;
+      margin-top: 20px;
+    }
+
+    .proceed-btn:hover {
+      background-color: #43cea2;
+      transform: scale(1.05);
+    }
+        /* Preloader Styles */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e0f7ff, #d0eaff, #f0f9ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #cce7ff;
+  border-top: 6px solid #007bff; /* Blue spinner color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+  </style>
+</head>
+
+<body>
+    <!-- Preloader -->
+<div id="preloader">
+  <div class="spinner"></div>
+</div>
+
+
+  <div class="container">
+    <h1>Book Your Movie 🎬</h1>
+
+    <h2 id="selectedMovieDisplay" style="text-align:center; color:#444;"></h2>
+
+    <div class="form-group">
+      <label for="cityInput">Enter City Name:</label>
+      <input type="text" id="cityInput" placeholder="Type your city..." oninput="showCitySuggestions()">
+      <div id="citySuggestions" class="suggestions"></div>
+    </div>
+
+    <div class="theater-select">
+      <select id="theaterSelect">
+        <option value="">Select a city first</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <select id="showtimeSelect">
+        <option value="">Choose a Showtime</option>
+        <option value="10:00 AM">10:00 AM</option>
+        <option value="12:00 PM">12:00 PM</option>
+        <option value="03:00 PM">03:00 PM</option>
+      </select>
+    </div>
+
+    <div class="ticket-select">
+      <label for="ticketSelect">Number of Tickets:</label>
+      <input type="number" id="ticketSelect" placeholder="Enter number of tickets" min="1" value="1">
+    </div>
+
+    <button class="proceed-btn" onclick="confirmProceed()">Proceed</button>
+  </div>
+
+  <script>
+    const cityTheaters = {
+      "Mumbai": [
+        { name: "PVR Phoenix", icon: "🎥" },
+        { name: "INOX R City", icon: "🎬" },
+        { name: "Carnival Cinemas", icon: "🎦" }
+      ],
+      // You can add more cities...
+    };
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const movie = localStorage.getItem('selectedMovie');
+      if (movie) {
+        document.getElementById('selectedMovieDisplay').textContent = `Selected Movie: 🎞️ ${movie}`;
+      }
+    });
+    
+    function showCitySuggestions() {
+      const input = document.getElementById('cityInput').value.toLowerCase();
+      const suggestionsBox = document.getElementById('citySuggestions');
+    
+      suggestionsBox.innerHTML = '';
+    
+      if (input.length === 0) {
+        suggestionsBox.style.display = 'none';
+        return;
+      }
+    
+      const matchedCities = Object.keys(cityTheaters).filter(city =>
+        city.toLowerCase().startsWith(input)
+      );
+    
+      if (matchedCities.length > 0) {
+        matchedCities.forEach(city => {
+          const div = document.createElement('div');
+          div.textContent = city;
+          div.classList.add('suggestion-item');
+          div.onclick = () => selectCity(city);
+          suggestionsBox.appendChild(div);
+        });
+        suggestionsBox.style.display = 'block';
+      } else {
+        suggestionsBox.style.display = 'none';
+      }
+    }
+    
+    function selectCity(city) {
+      document.getElementById('cityInput').value = city;
+      document.getElementById('citySuggestions').style.display = 'none';
+      updateTheaters(city);
+    }
+    
+    function updateTheaters(city) {
+      const theaterSelect = document.getElementById('theaterSelect');
+      theaterSelect.innerHTML = '';
+      const defaultOption = document.createElement('option');
+      defaultOption.textContent = 'Select Theater';
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+      theaterSelect.appendChild(defaultOption);
+    
+      if (cityTheaters[city]) {
+        cityTheaters[city].forEach(theater => {
+          const option = document.createElement('option');
+          option.value = theater.name;
+          option.textContent = `${theater.icon} ${theater.name}`;
+          theaterSelect.appendChild(option);
+        });
+      }
+    }
+    
+    function confirmProceed() {
+      const city = document.getElementById('cityInput').value;
+      const theater = document.getElementById('theaterSelect').value;
+      const showtime = document.getElementById('showtimeSelect').value;
+      const tickets = document.getElementById('ticketSelect').value;
+      const movie = localStorage.getItem('selectedMovie');
+    
+      if (city === "" || theater === "" || movie === null || showtime === "" || tickets <= 0) {
+        alert("Please select a city, theater, showtime, and valid number of tickets!");
+        return;
+      }
+    
+      // Save the selection to localStorage
+      localStorage.setItem('city', city);
+      localStorage.setItem('theater', theater);
+      localStorage.setItem('showtime', showtime);
+      localStorage.setItem('tickets', tickets);
+      localStorage.setItem('movie', movie); // 🔥 Saving movie again for transaction.html
+    
+      // Redirect after saving
+      window.location.href = "transaction.html";
+    }
+    </script>
+      <script>
+        // Preloader removal
+        window.addEventListener('load', () => {
+          const preloader = document.getElementById('preloader');
+          preloader.style.opacity = '0';
+          preloader.style.transition = 'opacity 0.5s ease';
+          setTimeout(() => {
+            preloader.style.display = 'none';
+          }, 500); // Wait for the fade-out transition
+        });
+      </script>
+    
+
+</body>
+</html>

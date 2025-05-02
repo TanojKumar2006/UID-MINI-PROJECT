@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ship Ticket Booking</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .booking-form {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 550px;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+      font-family: 'Tangerine', serif;
+      border-bottom: #003bb2 solid 3px;
+      border-radius: 10%;
+      font-size: 50px;
+    }
+
+    label {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-color: #66a6ff;
+      box-shadow: 0 0 8px rgba(102, 166, 255, 0.5);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #66a6ff, #89f7fe);
+      border: none;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: 0.4s;
+      box-shadow: 0 10px 20px rgba(102, 166, 255, 0.5);
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      transform: scale(1.05);
+    }
+
+    #price {
+      text-align: center;
+      font-size: 20px;
+      color: #444;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    #passengerNames {
+      margin-bottom: 20px;
+    }
+        /* Preloader Styles */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e0f7ff, #d0eaff, #f0f9ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #cce7ff;
+  border-top: 6px solid #007bff; /* Blue spinner color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+  </style>
+</head>
+
+<body>
+    <!-- Preloader -->
+<div id="preloader">
+  <div class="spinner"></div>
+</div>
+
+
+  <form class="booking-form" onsubmit="return goToLoadingPage()" method="POST">
+    <h2>Ship Ticket Booking</h2>
+
+    <label for="fromPort">From Port</label>
+    <select id="fromPort" name="fromPort" required onchange="calculateShipPrice()">
+      <option value="" disabled selected>Select Departure Port</option>
+    </select>
+
+    <label for="toPort">To Port</label>
+    <select id="toPort" name="toPort" required onchange="calculateShipPrice()">
+      <option value="" disabled selected>Select Destination Port</option>
+    </select>
+
+    <label for="date">Sailing Date</label>
+    <input type="date" id="date" name="date" required>
+
+    <label for="passengers">Passengers</label>
+    <select id="passengers" name="passengers" required onchange="updatePassengerFields(); calculateShipPrice()">
+      <option value="" disabled selected>Select passengers</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4+</option>
+    </select>
+
+    <div id="passengerNames" style="display:none;">
+      <div id="passengerInputFields"></div>
+    </div>
+
+    <label for="cabinType">Cabin Type</label>
+    <select id="cabinType" name="cabinType" required onchange="calculateShipPrice()">
+      <option value="" disabled selected>Select Cabin Type</option>
+      <option value="Economy">Economy</option>
+      <option value="Premium">Premium</option>
+      <option value="Luxury Suite">Luxury Suite</option>
+    </select>
+
+    <div id="price">Total Price: ₹0</div>
+
+    <button type="submit" class="submit-btn">Book Ticket</button>
+  </form>
+
+<script>
+const ports = [
+  "Mumbai Port", "Chennai Port", "Kochi Port", "Goa Port",
+  "Vishakhapatnam Port", "Kandla Port", "Paradip Port", "Mormugao Port",
+  "Tuticorin Port", "Haldia Port"
+];
+
+const fromPortSelect = document.getElementById('fromPort');
+const toPortSelect = document.getElementById('toPort');
+
+// Populate ports in both the "From Port" and "To Port" select elements
+ports.forEach(port => {
+  let optionFrom = document.createElement('option');
+  optionFrom.value = port;
+  optionFrom.text = port;
+  fromPortSelect.add(optionFrom);
+
+  let optionTo = document.createElement('option');
+  optionTo.value = port;
+  optionTo.text = port;
+  toPortSelect.add(optionTo);
+});
+
+function updatePassengerFields() {
+  const numPassengers = parseInt(document.getElementById('passengers').value) || 1;
+  const passengerNamesDiv = document.getElementById('passengerNames');
+  const passengerInputFields = document.getElementById('passengerInputFields');
+  
+  passengerInputFields.innerHTML = '';
+  passengerNamesDiv.style.display = 'none';
+
+  if (numPassengers > 0) {
+    passengerNamesDiv.style.display = 'block';
+    for (let i = 1; i <= numPassengers; i++) {
+      const inputField = document.createElement('div');
+      inputField.innerHTML = `
+        <label for="passenger${i}">Passenger ${i} Name</label>
+        <input type="text" id="passenger${i}" name="passenger${i}" placeholder="Enter name" required>
+      `;
+      passengerInputFields.appendChild(inputField);
+    }
+  }
+}
+
+function calculateShipPrice() {
+  const from = document.getElementById('fromPort').value;
+  const to = document.getElementById('toPort').value;
+  const passengers = parseInt(document.getElementById('passengers').value) || 1;
+  const cabinType = document.getElementById('cabinType').value;
+
+  if (from && to && from !== to && cabinType) {
+    let basePrice = Math.floor(Math.random() * (5000 - 2000 + 1)) + 2000; // Random ₹2000-₹5000
+    let multiplier = 1;
+
+    if (cabinType === "Premium") multiplier = 1.5;
+    if (cabinType === "Luxury Suite") multiplier = 2.5;
+
+    let totalPrice = basePrice * multiplier * passengers;
+
+    document.getElementById('price').innerText = "Total Price: ₹" + totalPrice.toFixed(0);
+
+    // Store the booking details in localStorage
+    localStorage.setItem('fromPort', from);
+    localStorage.setItem('toPort', to);
+    localStorage.setItem('date', document.getElementById('date').value);
+    localStorage.setItem('passengers', passengers);
+    localStorage.setItem('cabinType', cabinType);
+    localStorage.setItem('price', totalPrice.toFixed(0));
+  } else {
+    document.getElementById('price').innerText = "Total Price: ₹0";
+  }
+}
+
+function goToLoadingPage() {
+  alert("Ship ticket booked successfully! 🚢 Redirecting to loading page...");
+  window.location.href = "transaction2.html";  // Redirect to the transaction receipt page
+  return false;
+}
+</script>
+<script>
+  // Preloader removal
+  window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    preloader.style.opacity = '0';
+    preloader.style.transition = 'opacity 0.5s ease';
+    setTimeout(() => {
+      preloader.style.display = 'none';
+    }, 500); // Wait for the fade-out transition
+  });
+</script>
+
+</body>
+</html>
